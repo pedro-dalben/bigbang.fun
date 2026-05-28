@@ -47,7 +47,12 @@ export async function fetchServerStatus(serverIp: string = 'bigbangcraft.fun'): 
         playersOnline: data.players?.online ?? 0,
         maxPlayers: data.players?.max ?? 100,
         version: data.version || 'AllTheMons',
-        motd: data.motd?.clean ? data.motd.clean.join(' ') : MOCK_STATUS.motd,
+        motd: data.motd?.clean
+          ? data.motd.clean.join(' ')
+              .replace(/&lt;|</g, '')
+              .replace(/\s+/g, ' ')
+              .trim()
+          : MOCK_STATUS.motd,
         ping: 25, // O ping pode ser estimado ou fixado caso a API não retorne com precisão
         playersList: data.players?.list ? data.players.list.map((player: { name: string; uuid: string }, index: number) => ({
           name: player.name,

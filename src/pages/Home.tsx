@@ -53,7 +53,7 @@ export function Home() {
     {
       icon: <Layers className="w-6 h-6 text-pink-400" />,
       title: 'Modpack AllTheMons',
-      description: 'A melhor seleção de mods de aventura, tecnologia e criaturas e cobblemon totalmente traduzida.'
+      description: 'A fusão perfeita da automação avançada do All the Mods 10 (ATM10) com a experiência completa de Cobblemon.'
     },
     {
       icon: <Trophy className="w-6 h-6 text-emerald-400" />,
@@ -107,8 +107,7 @@ export function Home() {
 
               {/* Descricao */}
               <p className="text-base sm:text-lg text-slate-300 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                Explore novas dimensões, construa impérios industriais e capture criaturas lendárias. 
-                O <span className="text-white font-semibold">BigBangCraft</span> combina a liberdade do Minecraft com uma comunidade vibrante e campeonatos inesquecíveis.
+                Explore o modpack definitivo que une a automação de <span className="text-white font-semibold">All the Mods 10 (ATM10)</span> à experiência de capturar criaturas do <span className="text-white font-semibold">Cobblemon</span>. Construa fábricas automatizadas de Pokébolas e domine mais de 400 mods rumo à lendária <span className="text-purple-300 font-semibold">ATM Star</span>!
               </p>
 
               {/* Botoes de Acao Principais */}
