@@ -1,11 +1,33 @@
+import { useState, useEffect } from 'react';
 import { useParams, NavLink } from 'react-router-dom';
-import { newsData } from '../data/news';
+import { getNewsItem, FirestoreNewsItem } from '../services/newsService';
 import { Calendar, ArrowLeft, Share2, Sparkles } from 'lucide-react';
 
 export function NewsDetails() {
   const { id } = useParams<{ id: string }>();
-  
-  const newsItem = newsData.find((n) => n.id === id);
+  const [newsItem, setNewsItem] = useState<FirestoreNewsItem | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+    getNewsItem(id)
+      .then((data) => {
+        setNewsItem(data);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0b0a14]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-slate-400 text-xs font-semibold">Carregando notícia...</span>
+        </div>
+      </div>
+    );
+  }
 
   if (!newsItem) {
     return (

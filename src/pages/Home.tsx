@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { ServerStatusCard } from '../components/ServerStatusCard';
 import { NewsCard } from '../components/NewsCard';
-import { newsData } from '../data/news';
+import { getNews, FirestoreNewsItem } from '../services/newsService';
 import { 
   Copy, 
   Check, 
@@ -20,6 +20,17 @@ import {
 
 export function Home() {
   const [copied, setCopied] = useState(false);
+  const [recentNews, setRecentNews] = useState<FirestoreNewsItem[]>([]);
+  const [newsLoading, setNewsLoading] = useState(true);
+
+  useEffect(() => {
+    getNews()
+      .then((data) => {
+        setRecentNews(data.slice(0, 3));
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setNewsLoading(false));
+  }, []);
 
   const handleCopyIp = () => {
     navigator.clipboard.writeText('bigbangcraft.fun');
@@ -50,9 +61,6 @@ export function Home() {
       description: 'Dispute prêmios reais e itens lendários em nossas arenas com torneios oficiais.'
     }
   ];
-
-  // Pegamos as 3 ultimas noticias para a Home
-  const recentNews = newsData.slice(0, 3);
 
   return (
     <div className="space-y-20 pb-20">
@@ -223,11 +231,22 @@ export function Home() {
           </NavLink>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {recentNews.map((news) => (
-            <NewsCard key={news.id} news={news} />
-          ))}
-        </div>
+        {newsLoading ? (
+          <div className="flex flex-col items-center justify-center py-12 gap-2">
+            <div className="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-slate-500 text-xs font-semibold">Carregando notícias...</span>
+          </div>
+        ) : recentNews.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {recentNews.map((news) => (
+              <NewsCard key={news.id} news={news} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 bg-[#121024]/30 rounded-2xl border border-purple-950/60">
+            <p className="text-slate-400 text-sm">Nenhuma notícia encontrada.</p>
+          </div>
+        )}
 
       </section>
 

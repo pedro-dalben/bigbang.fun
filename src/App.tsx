@@ -13,6 +13,7 @@ import { Updates } from './pages/Updates';
 import { Players } from './pages/Players';
 import { Vips } from './pages/Vips';
 import { Rules } from './pages/Rules';
+import { Admin } from './pages/Admin';
 
 // Rola a página para o topo automaticamente ao mudar de rota
 function ScrollToTop() {
@@ -48,6 +49,7 @@ export default function App() {
             <Route path="/players" element={<Players />} />
             <Route path="/vips" element={<Vips />} />
             <Route path="/regras" element={<Rules />} />
+            <Route path="/admin" element={<Admin />} />
             
             {/* Fallback caso a URL não exista */}
             <Route path="*" element={<Home />} />

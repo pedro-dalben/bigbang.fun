@@ -1,16 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NewsCard } from '../components/NewsCard';
-import { newsData } from '../data/news';
+import { getNews, FirestoreNewsItem } from '../services/newsService';
 import { Newspaper, Filter } from 'lucide-react';
 
 export function News() {
+  const [news, setNews] = useState<FirestoreNewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('Todas');
 
   const categories = ['Todas', 'Eventos', 'Atualização', 'Comunidade', 'Anúncio', 'Competitivo'];
 
+  useEffect(() => {
+    getNews()
+      .then((data) => {
+        setNews(data);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, []);
+
   const filteredNews = selectedCategory === 'Todas' 
-    ? newsData 
-    : newsData.filter(item => item.category === selectedCategory);
+    ? news 
+    : news.filter(item => item.category === selectedCategory);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
@@ -53,10 +64,15 @@ export function News() {
       </div>
 
       {/* Grid de Notícias */}
-      {filteredNews.length > 0 ? (
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-20 gap-3">
+          <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-slate-500 text-xs font-semibold">Carregando central de informações...</span>
+        </div>
+      ) : filteredNews.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredNews.map((news) => (
-            <NewsCard key={news.id} news={news} />
+          {filteredNews.map((newsItem) => (
+            <NewsCard key={newsItem.id} news={newsItem} />
           ))}
         </div>
       ) : (
