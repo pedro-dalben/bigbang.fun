@@ -56,6 +56,7 @@ export function Admin() {
   const [customDate, setCustomDate] = useState("");
   const [formError, setFormError] = useState("");
   const [formSaving, setFormSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Categories list
   const categories: FirestoreNewsItem['category'][] = [
@@ -130,10 +131,10 @@ export function Admin() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Tem certeza que deseja excluir esta notícia?")) return;
     try {
       await deleteNewsItem(id);
       setNews(news.filter(item => item.id !== id));
+      setDeletingId(null);
     } catch (err) {
       alert("Erro ao deletar notícia.");
     }
@@ -522,22 +523,40 @@ export function Admin() {
                     </td>
                     <td className="px-6 py-4 text-xs text-slate-400">{item.date}</td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => openEditForm(item)}
-                          className="p-1.5 bg-white/5 hover:bg-purple-950/40 border border-white/10 hover:border-purple-800/50 text-slate-400 hover:text-purple-300 rounded-lg transition-colors"
-                          title="Editar"
-                        >
-                          <Edit className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(item.id)}
-                          className="p-1.5 bg-white/5 hover:bg-red-950/40 border border-white/10 hover:border-red-800/50 text-slate-400 hover:text-red-400 rounded-lg transition-colors"
-                          title="Excluir"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
+                      {deletingId === item.id ? (
+                        <div className="flex items-center justify-end gap-2">
+                          <span className="text-xs text-red-400 font-semibold mr-1">Excluir?</span>
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className="px-2.5 py-1 bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold rounded transition-colors"
+                          >
+                            Sim
+                          </button>
+                          <button
+                            onClick={() => setDeletingId(null)}
+                            className="px-2.5 py-1 bg-[#121024] hover:bg-white/10 text-slate-300 text-[10px] font-bold rounded border border-white/5 transition-colors"
+                          >
+                            Não
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => openEditForm(item)}
+                            className="p-1.5 bg-white/5 hover:bg-purple-950/40 border border-white/10 hover:border-purple-800/50 text-slate-400 hover:text-purple-300 rounded-lg transition-colors"
+                            title="Editar"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => setDeletingId(item.id)}
+                            className="p-1.5 bg-white/5 hover:bg-red-950/40 border border-white/10 hover:border-red-800/50 text-slate-400 hover:text-red-400 rounded-lg transition-colors"
+                            title="Excluir"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}
